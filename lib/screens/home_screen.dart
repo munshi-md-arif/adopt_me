@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:adopt_me/screens/history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,11 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          _buildSearchAndFilters(),
-          Expanded(
-            child: BlocBuilder<PetBloc, PetState>(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildSearchAndFilters(),
+            BlocBuilder<PetBloc, PetState>(
               builder: (context, state) {
                 if (state is PetLoading) {
                   return const Center(child: CircularProgressIndicator());
@@ -82,42 +80,50 @@ class _HomeScreenState extends State<HomeScreen> {
                   _totalPets = state.totalPets;
                   if (state.isEmpty) {
                     return const Center(
-                      child: Text(
-                        'No pets found',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          'No pets found',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     );
                   } else {
                     return Column(
                       children: [
-                        Expanded(
-                          child: GridView.builder(
-                            padding: const EdgeInsets.all(16),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.7,
-                            ),
-                            itemCount: state.pets.length,
-                            itemBuilder: (context, index) {
-                              return PetCard(pet: state.pets[index]);
-                            },
+                        GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.7,
                           ),
+                          itemCount: state.pets.length,
+                          shrinkWrap:
+                              true, // Allows it to be inside SingleChildScrollView
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return PetCard(pet: state.pets[index]);
+                          },
                         ),
                         _buildPaginationButtons(),
                       ],
                     );
                   }
                 } else {
-                  return const Center(child: Text('Error loading pets'));
+                  return const Center(
+                      child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Text('Error loading pets'),
+                  ));
                 }
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -127,7 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // 🔎 Search Bar
           TextField(
             controller: _searchController,
             onChanged: (_) => _fetchPets(),
@@ -145,8 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // 🛠 Filters (Age, Gender, Vaccinated, Adopted, Price)
           Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -203,8 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-
-          // 💰 Price Range Slider
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Column(
@@ -241,7 +242,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// 🔹 **Pagination UI (Square Buttons with Highlight)**
   Widget _buildPaginationButtons() {
     int totalPages = (_totalPets / 6).ceil();
     return Padding(
