@@ -65,7 +65,6 @@ class MyApp extends StatelessWidget {
             ),
           );
         } else {
-          // Show a loading screen while SharedPreferences is being initialized
           return const MaterialApp(
             home: Scaffold(
               body: Center(

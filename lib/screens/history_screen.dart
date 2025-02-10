@@ -24,9 +24,8 @@ class _HistoryPageState extends State<HistoryPage> {
     final prefs = await SharedPreferences.getInstance();
     final petBloc = context.read<PetBloc>();
 
-    // Ensure pets are loaded
     if (petBloc.allPets.isEmpty) {
-      petBloc.add(const LoadPets()); // Trigger loading if not already done
+      petBloc.add(const LoadPets());
     }
 
     setState(() {

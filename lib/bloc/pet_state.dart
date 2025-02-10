@@ -11,7 +11,7 @@ class PetLoading extends PetState {}
 
 class PetLoaded extends PetState {
   final List<Pet> pets;
-  final int totalPets; 
+  final int totalPets;
   final bool isEmpty;
 
   const PetLoaded(this.pets, this.totalPets, {this.isEmpty = false});

@@ -34,7 +34,6 @@ class PetBloc extends Bloc<PetEvent, PetState> {
         }
       }
 
-      // 🛠 Apply Filters
       List<Pet> filteredPets = allPets.where((pet) {
         bool matchesSearch = event.searchQuery.isEmpty ||
             pet.name.toLowerCase().contains(event.searchQuery.toLowerCase());
@@ -56,7 +55,6 @@ class PetBloc extends Bloc<PetEvent, PetState> {
 
       bool isEmpty = filteredPets.isEmpty;
 
-      // Pagination
       int startIndex = (event.page - 1) * 6;
       int endIndex = startIndex + 6;
       if (startIndex >= filteredPets.length) {
@@ -70,7 +68,7 @@ class PetBloc extends Bloc<PetEvent, PetState> {
 
       emit(PetLoaded(paginatedPets, filteredPets.length, isEmpty: isEmpty));
     } catch (e) {
-      print('Error in _onLoadPets: $e'); // Add logging
+      print('Error in _onLoadPets: $e');
       emit(PetError());
     }
   }
